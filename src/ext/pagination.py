@@ -10,7 +10,7 @@ class PaginationView(ui.View):
 
     def __init__(
         self,
-        data = [],
+        data=[],
         *,
         title: str | None = "Not specified",
         description: str | None = None,
