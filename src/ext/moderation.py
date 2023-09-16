@@ -78,28 +78,37 @@ class Moderation(BaseCog):
     async def bans(self, interaction: Interaction):
         ban_list: list[dict] = [{entry.user.name: entry.reason} async for entry in interaction.guild.bans()]
 
-        embed = Embed(
-            color=Colour(0x1EA9FF),
-            description="See banned users and their banning reason.",
-        )
+        data = []
 
-        embed.set_author(
-            name="List of bans",
+        if ban_list:
+            for entry in ban_list:
+                data.append(*((f"• {name}", reason) for (name, reason) in entry.items()))
+        else:
+            data = [("", "No banned users")]
+
+        bans_view = PaginationView(
+            data,
+            title="List of bans",
+            description="See banned users and their banning reason.",
+            color=Colour(0x1EA9FF),
             icon_url="https://lh3.googleusercontent.com/drive-viewer/AITFw-xNjHq5ShLIkWYl0hgoufXyOwwqBpceO_e--RolWCfXwlRBx1DWjwyZ6zcN48nm9r7ZmSSvDibtc3bBaBXExAx1urBr=w3024-h1514",
         )
 
-        if ban_list is not None and ban_list:
-            for entry in ban_list:
-                for name, reason in entry.items():
-                    embed.add_field(name=f"• {name}", value=reason, inline=False)
-        else:
-            embed.add_field(name="", value="No banned users.")
-
-        await interaction.send(embed=embed)
+        await bans_view.send(interaction=interaction)
 
     @slash_command(description="test", default_member_permissions=Permissions(administrator=True))
     async def test(self, interaction: Interaction):
-        data = range(1,15)
-        pg = PaginationView(title="Hi y'all", description="test description", icon_url="https://cdn-icons-png.flaticon.com/512/825/825590.png", color=Colour.red())
-        pg.data = data
+        data: list[tuple[str, str]] = [(f"TestName", "TestValue")] * 30
+        pg = PaginationView(
+            data,
+            title="Hi y'all",
+            description="test description",
+            icon_url="https://cdn-icons-png.flaticon.com/512/825/825590.png",
+            color=Colour.red(),
+        )
+        await pg.send(interaction=interaction)
+
+    @slash_command(description="test", default_member_permissions=Permissions(administrator=True))
+    async def tescior(self, interaction: Interaction):
+        pg = PaginationView()
         await pg.send(interaction=interaction)
