@@ -1,20 +1,12 @@
 import typing as t
 
 from nextcord import (
-    Forbidden,
-    HTTPException,
-    Interaction,
-    Permissions,
-    SlashOption,
-    User,
-    slash_command,
-    Embed,
-    Colour,
-    Emoji,
+    Colour, Embed, Emoji, Forbidden, HTTPException, Interaction, Permissions, SlashOption, User, slash_command,
 )
 from nextcord.ext import application_checks
 
 from . import BaseCog
+from .pagination import PaginationView
 
 if t.TYPE_CHECKING:
     from .. import Skurczybyk
@@ -104,3 +96,10 @@ class Moderation(BaseCog):
             embed.add_field(name="", value="No banned users.")
 
         await interaction.send(embed=embed)
+
+    @slash_command(description="test", default_member_permissions=Permissions(administrator=True))
+    async def test(self, interaction: Interaction):
+        data = range(1,15)
+        pg = PaginationView(title="Hi y'all", description="test description", icon_url="https://cdn-icons-png.flaticon.com/512/825/825590.png", color=Colour.red())
+        pg.data = data
+        await pg.send(interaction=interaction)
