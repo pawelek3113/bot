@@ -10,8 +10,10 @@ class PaginationView(ui.View):
 
     def __init__(
         self,
-        title: str | None = "Unknown Title",
-        description: str | None = "Unknown Description",
+        data = [],
+        *,
+        title: str | None = "Not specified",
+        description: str | None = None,
         icon_url: str
         | None = "https://lh3.googleusercontent.com/drive-viewer/AITFw-z_IgjwziybK0dE7JNu5i92UEkthC_H89iGhNIiUN_i1cuEnYbi9ijZPBnGRsOGNm465Rzu_GkviBlhjxwAXEp8uNGKxg=w3024-h1514",
         color: Colour | None = Colour(0xADD8E6),
@@ -19,6 +21,7 @@ class PaginationView(ui.View):
         auto_defer: bool = True,
     ) -> None:
         super().__init__(timeout=timeout, auto_defer=auto_defer)
+        self.data = data
         self.title = title
         self.description = description
         self.icon_url = icon_url
@@ -26,15 +29,15 @@ class PaginationView(ui.View):
 
     async def send(self, interaction: Interaction):
         self.message = await interaction.send(view=self)
-        await self.update_message(self.data[: self.separator])
+        await self.update_message(self.data[:self.separator])
 
     def create_embed(self, data):
         embed = Embed(color=self.color, description=self.description).set_author(
             name=self.title, icon_url=self.icon_url
         )
-        for item in data:
+        for name, value in data:
             # !
-            embed.add_field(name=item, value=item, inline=False)
+            embed.add_field(name=name, value=value, inline=False)
         return embed
 
     async def update_message(self, data):
@@ -42,30 +45,41 @@ class PaginationView(ui.View):
         await self.message.edit(embed=self.create_embed(data), view=self)
 
     def update_buttons(self):
-        if self.current_page == 1:
+        if not self.data:
             self.first_page_button.disabled = True
             self.previous_button.disabled = True
+            self.next_button.disabled = True
+            self.last_page_button.disabled = True
 
             self.first_page_button.style = ButtonStyle.gray
             self.previous_button.style = ButtonStyle.gray
-        else:
-            self.first_page_button.disabled = False
-            self.previous_button.disabled = False
-
-            self.first_page_button.style = ButtonStyle.primary
-            self.previous_button.style = ButtonStyle.primary
-
-        if self.current_page == ceil(len(self.data) / self.separator):
-            self.last_page_button.disabled = True
-            self.next_button.disabled = True
-            self.last_page_button.style = ButtonStyle.gray
             self.next_button.style = ButtonStyle.gray
+            self.last_page_button.style = ButtonStyle.gray
         else:
-            self.last_page_button.disabled = False
-            self.next_button.disabled = False
+            if self.current_page == 1:
+                self.first_page_button.disabled = True
+                self.previous_button.disabled = True
 
-            self.last_page_button.style = ButtonStyle.primary
-            self.next_button.style = ButtonStyle.primary
+                self.first_page_button.style = ButtonStyle.gray
+                self.previous_button.style = ButtonStyle.gray
+            else:
+                self.first_page_button.disabled = False
+                self.previous_button.disabled = False
+
+                self.first_page_button.style = ButtonStyle.primary
+                self.previous_button.style = ButtonStyle.primary
+
+            if self.current_page == ceil(len(self.data) / self.separator):
+                self.last_page_button.disabled = True
+                self.next_button.disabled = True
+                self.last_page_button.style = ButtonStyle.gray
+                self.next_button.style = ButtonStyle.gray
+            else:
+                self.last_page_button.disabled = False
+                self.next_button.disabled = False
+
+                self.last_page_button.style = ButtonStyle.primary
+                self.next_button.style = ButtonStyle.primary
 
     @ui.button(label="|<", style=ButtonStyle.primary)
     async def first_page_button(self, button: ui.Button, interaction: Interaction):
