@@ -1,19 +1,19 @@
 from math import ceil
 
 from nextcord import ButtonStyle, Colour, Embed, Interaction, ui
+from typing import Tuple
 
 
-# ! - check
 class PaginationView(ui.View):
     current_page: int = 1
-    separator: int = 5
 
     def __init__(
         self,
-        data=[],
+        data: list[Tuple] | str = [],
         *,
         title: str | None = "Not specified",
         description: str | None = None,
+        separator: int = 5,
         icon_url: str
         | None = "https://lh3.googleusercontent.com/drive-viewer/AITFw-z_IgjwziybK0dE7JNu5i92UEkthC_H89iGhNIiUN_i1cuEnYbi9ijZPBnGRsOGNm465Rzu_GkviBlhjxwAXEp8uNGKxg=w3024-h1514",
         color: Colour | None = Colour(0xADD8E6),
@@ -24,19 +24,33 @@ class PaginationView(ui.View):
         self.data = data
         self.title = title
         self.description = description
+        self.separator = separator
         self.icon_url = icon_url
         self.color = color
 
+    @property
+    def last_page(self):
+        if not self.data:
+            return 1
+        return ceil(len(self.data) / self.separator)
+
+    @property
+    def until_item(self):
+        return self.current_page * self.separator
+
+    @property
+    def from_item(self):
+        return self.until_item - self.separator
+
     async def send(self, interaction: Interaction):
         self.message = await interaction.send(view=self)
-        await self.update_message(self.data[:self.separator])
+        await self.update_message(self.data[: self.separator])
 
     def create_embed(self, data):
         embed = Embed(color=self.color, description=self.description).set_author(
             name=self.title, icon_url=self.icon_url
         )
         for name, value in data:
-            # !
             embed.add_field(name=name, value=value, inline=False)
         return embed
 
@@ -45,6 +59,10 @@ class PaginationView(ui.View):
         await self.message.edit(embed=self.create_embed(data), view=self)
 
     def update_buttons(self):
+        self.info_button.disabled = True
+        self.info_button.style = ButtonStyle.green
+        self.info_button.label = f"{self.current_page}/{self.last_page}"
+
         if not self.data:
             self.first_page_button.disabled = True
             self.previous_button.disabled = True
@@ -69,7 +87,7 @@ class PaginationView(ui.View):
                 self.first_page_button.style = ButtonStyle.primary
                 self.previous_button.style = ButtonStyle.primary
 
-            if self.current_page == ceil(len(self.data) / self.separator):
+            if self.current_page == self.last_page:
                 self.last_page_button.disabled = True
                 self.next_button.disabled = True
                 self.last_page_button.style = ButtonStyle.gray
@@ -81,38 +99,34 @@ class PaginationView(ui.View):
                 self.last_page_button.style = ButtonStyle.primary
                 self.next_button.style = ButtonStyle.primary
 
-    @ui.button(label="|<", style=ButtonStyle.primary)
+    @ui.button(label="|<")
     async def first_page_button(self, button: ui.Button, interaction: Interaction):
         await interaction.response.defer()
         self.current_page = 1
-        until_item = self.current_page * self.separator
-        from_item = until_item - self.separator
 
-        await self.update_message(self.data[:until_item])
+        await self.update_message(self.data[: self.until_item])
 
-    @ui.button(label="<", style=ButtonStyle.primary)
+    @ui.button(label="<")
     async def previous_button(self, button: ui.Button, interaction: Interaction):
         await interaction.response.defer()
         self.current_page -= 1
-        until_item = self.current_page * self.separator
-        from_item = until_item - self.separator
 
-        await self.update_message(self.data[from_item:until_item])
+        await self.update_message(self.data[self.from_item : self.until_item])
 
-    @ui.button(label=">", style=ButtonStyle.primary)
+    @ui.button(label="i")
+    async def info_button(self, button: ui.Button, interaction: Interaction):
+        await interaction.response.defer()
+
+    @ui.button(label=">")
     async def next_button(self, button: ui.Button, interaction: Interaction):
         await interaction.response.defer()
         self.current_page += 1
-        until_item = self.current_page * self.separator
-        from_item = until_item - self.separator
 
-        await self.update_message(self.data[from_item:until_item])
+        await self.update_message(self.data[self.from_item : self.until_item])
 
-    @ui.button(label=">|", style=ButtonStyle.primary)
+    @ui.button(label=">|")
     async def last_page_button(self, button: ui.Button, interaction: Interaction):
         await interaction.response.defer()
-        self.current_page = ceil(len(self.data) / self.separator)
-        until_item = self.current_page * self.separator
-        from_item = until_item - self.separator
+        self.current_page = self.last_page
 
-        await self.update_message(self.data[from_item:])
+        await self.update_message(self.data[self.from_item :])
