@@ -1,8 +1,8 @@
+from datetime import datetime
 from math import ceil
+from typing import Tuple
 
 from nextcord import ButtonStyle, Colour, Embed, Interaction, ui
-from typing import Tuple
-from datetime import datetime
 
 
 class PaginationView(ui.View):

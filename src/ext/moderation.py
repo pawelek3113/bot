@@ -1,17 +1,6 @@
 import typing as t
 
-from nextcord import (
-    Colour,
-    Embed,
-    Emoji,
-    Forbidden,
-    HTTPException,
-    Interaction,
-    Permissions,
-    SlashOption,
-    User,
-    slash_command,
-)
+from nextcord import Colour, Forbidden, HTTPException, Interaction, Permissions, SlashOption, User, slash_command
 from nextcord.ext import application_checks
 
 from . import BaseCog
