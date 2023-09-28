@@ -100,28 +100,28 @@ class PaginationView(ui.View):
                 self.last_page_button.style = ButtonStyle.primary
                 self.next_button.style = ButtonStyle.primary
 
-    @ui.button(label="|<")
+    @ui.button(emoji="⏪")
     async def first_page_button(self, button: ui.Button, interaction: Interaction):
         await interaction.response.defer()
         self.current_page = 1
 
         await self.update_message(self.data[: self.until_item])
 
-    @ui.button(label="<")
+    @ui.button(emoji="◀️")
     async def previous_button(self, button: ui.Button, interaction: Interaction):
         await interaction.response.defer()
         self.current_page -= 1
 
         await self.update_message(self.data[self.from_item : self.until_item])
 
-    @ui.button(label=">")
+    @ui.button(emoji="▶️")
     async def next_button(self, button: ui.Button, interaction: Interaction):
         await interaction.response.defer()
         self.current_page += 1
 
         await self.update_message(self.data[self.from_item : self.until_item])
 
-    @ui.button(label=">|")
+    @ui.button(emoji="⏩")
     async def last_page_button(self, button: ui.Button, interaction: Interaction):
         await interaction.response.defer()
         self.current_page = self.last_page
