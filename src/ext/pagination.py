@@ -2,6 +2,7 @@ from math import ceil
 
 from nextcord import ButtonStyle, Colour, Embed, Interaction, ui
 from typing import Tuple
+from datetime import datetime
 
 
 class PaginationView(ui.View):
@@ -9,7 +10,7 @@ class PaginationView(ui.View):
 
     def __init__(
         self,
-        data: list[Tuple] | str = [],
+        data: list[Tuple] = [],
         *,
         title: str | None = "Not specified",
         description: str | None = None,
@@ -47,9 +48,13 @@ class PaginationView(ui.View):
         await self.update_message(self.data[: self.separator])
 
     def create_embed(self, data):
-        embed = Embed(color=self.color, description=self.description).set_author(
-            name=self.title, icon_url=self.icon_url
+        embed = (
+            Embed(color=self.color, description=self.description)
+            .set_author(name=self.title, icon_url=self.icon_url)
+            .set_footer(text=f"Page {self.current_page} of {self.last_page}")
         )
+        embed.timestamp = datetime.utcnow()
+
         for name, value in data:
             embed.add_field(name=name, value=value, inline=False)
         return embed
@@ -59,10 +64,6 @@ class PaginationView(ui.View):
         await self.message.edit(embed=self.create_embed(data), view=self)
 
     def update_buttons(self):
-        self.info_button.disabled = True
-        self.info_button.style = ButtonStyle.green
-        self.info_button.label = f"{self.current_page}/{self.last_page}"
-
         if not self.data:
             self.first_page_button.disabled = True
             self.previous_button.disabled = True
@@ -112,10 +113,6 @@ class PaginationView(ui.View):
         self.current_page -= 1
 
         await self.update_message(self.data[self.from_item : self.until_item])
-
-    @ui.button(label="i")
-    async def info_button(self, button: ui.Button, interaction: Interaction):
-        await interaction.response.defer()
 
     @ui.button(label=">")
     async def next_button(self, button: ui.Button, interaction: Interaction):
