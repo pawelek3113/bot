@@ -1,7 +1,16 @@
 import typing as t
 
 from nextcord import (
-    Colour, Embed, Emoji, Forbidden, HTTPException, Interaction, Permissions, SlashOption, User, slash_command,
+    Colour,
+    Embed,
+    Emoji,
+    Forbidden,
+    HTTPException,
+    Interaction,
+    Permissions,
+    SlashOption,
+    User,
+    slash_command,
 )
 from nextcord.ext import application_checks
 
@@ -95,20 +104,3 @@ class Moderation(BaseCog):
         )
 
         await bans_view.send(interaction=interaction)
-
-    @slash_command(description="test", default_member_permissions=Permissions(administrator=True))
-    async def test(self, interaction: Interaction):
-        data: list[tuple[str, str]] = [(f"TestName", "TestValue")] * 30
-        pg = PaginationView(
-            data,
-            title="Hi y'all",
-            description="test description",
-            icon_url="https://cdn-icons-png.flaticon.com/512/825/825590.png",
-            color=Colour.red(),
-        )
-        await pg.send(interaction=interaction)
-
-    @slash_command(description="test", default_member_permissions=Permissions(administrator=True))
-    async def tescior(self, interaction: Interaction):
-        pg = PaginationView()
-        await pg.send(interaction=interaction)
