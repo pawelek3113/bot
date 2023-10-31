@@ -89,7 +89,6 @@ class Moderation(BaseCog):
             title="List of bans",
             description="See banned users and their banning reason.",
             color=Colour(0x1EA9FF),
-            icon_url="https://lh3.googleusercontent.com/drive-viewer/AITFw-xNjHq5ShLIkWYl0hgoufXyOwwqBpceO_e--RolWCfXwlRBx1DWjwyZ6zcN48nm9r7ZmSSvDibtc3bBaBXExAx1urBr=w3024-h1514",
         )
 
         await bans_view.send(interaction=interaction)

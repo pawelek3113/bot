@@ -45,11 +45,9 @@ class PaginationView(ui.View):
         await self.update_message(self.data[: self.separator])
 
     def create_embed(self, data):
-        embed = (
-            Embed(color=self.color, description=self.description, timestamp=datetime.utcnow())
-            .set_author(name=self.title, icon_url=self.icon_url)
-            .set_footer(text=f"Page {self.current_page} of {self.last_page}")
-        )
+        embed = Embed(
+            color=self.color, title=self.title, description=self.description, timestamp=datetime.utcnow()
+        ).set_footer(text=f"Page {self.current_page} of {self.last_page}")
 
         for name, value in data:
             embed.add_field(name=name, value=value, inline=False)
