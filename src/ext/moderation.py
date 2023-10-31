@@ -4,7 +4,7 @@ from nextcord import Colour, Forbidden, HTTPException, Interaction, Permissions,
 from nextcord.ext import application_checks
 
 from . import BaseCog
-from .pagination import PaginationView
+from .views.pagination import PaginationView
 
 if t.TYPE_CHECKING:
     from .. import Skurczybyk
