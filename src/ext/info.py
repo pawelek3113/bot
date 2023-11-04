@@ -20,15 +20,14 @@ class Info(BaseCog):
     @application_checks.guild_only()
     async def user_info(self, interaction: Interaction, member: Member):
         roles: list[str] = [role.mention for role in member.roles[1:]]
-        role_count = len(roles)
 
-        if role_count == 0:
-            roles.append("```No roles```")
+        if not roles:
+            roles = [
+                "```No roles```",
+            ]
 
         roles.reverse()
-
-        if len(roles) > 15:
-            roles = roles[:15]
+        roles = roles[:15]
 
         embed = (
             Embed(color=member.color, title="User info", timestamp=datetime.utcnow())
@@ -63,19 +62,15 @@ class Info(BaseCog):
         roles: list[str] = [role.mention for role in server.roles[1:]]
         role_count = len(roles)
         roles.reverse()
-
-        if role_count > 10:
-            roles = roles[:10]
+        
+        roles = roles[:10]
 
         ban_count = len([ban async for ban in server.bans()])
 
-        categories = [category for category in server.categories]
+        categories = server.categories
         channels = [channel.mention for channel in server.channels if channel not in categories]
 
-        channel_count = len(channels)
-
-        if channel_count > 10:
-            channels = channels[:10]
+        channels = channels[:10]
 
         embed = (
             Embed(color=0x3461BB, title="Server info", timestamp=datetime.utcnow())
@@ -89,7 +84,7 @@ class Info(BaseCog):
             .add_field(name="Ban count", value=f"```{ban_count}```", inline=True)
             .add_field(name="Server language", value=f"```{server.preferred_locale}```", inline=True)
             .add_field(name="Channels (max 10)", value=f"{' '.join(channels)}", inline=False)
-            .add_field(name="Tier", value=f"```{server.premium_tier}```", inline=True)
+            .add_field(name="Nitro  Tier", value=f"```{server.premium_tier}```", inline=True)
             .add_field(name="Nitro boosts", value=f"```{server.premium_subscription_count}```", inline=True)
             .add_field(
                 name="Server created on: ",
