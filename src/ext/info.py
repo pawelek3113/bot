@@ -1,12 +1,13 @@
 import typing as t
 from datetime import datetime
-from .views.ServerInfoView import ServerInfoView
-from .views.UserInfoView import UserInfoView
+
 from nextcord import Embed, Interaction, Member, slash_command
 from nextcord.ext import application_checks
 from nextcord.utils import format_dt
 
 from . import BaseCog
+from .views.ServerInfoView import ServerInfoView
+from .views.UserInfoView import UserInfoView
 
 if t.TYPE_CHECKING:
     from .. import Skurczybyk
@@ -62,7 +63,7 @@ class Info(BaseCog):
         roles: list[str] = [role.mention for role in server.roles[1:]]
         role_count = len(roles)
         roles.reverse()
-        
+
         roles = roles[:10]
 
         ban_count = len([ban async for ban in server.bans()])

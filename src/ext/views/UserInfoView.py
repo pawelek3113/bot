@@ -1,4 +1,4 @@
-from nextcord import Interaction, ui, Member
+from nextcord import Interaction, Member, ui
 
 
 class UserInfoView(ui.View):
@@ -11,7 +11,7 @@ class UserInfoView(ui.View):
         await interaction.response.defer()
         roles: list[str] = [role.mention for role in self.member.roles[1:]]
         roles.reverse()
-        if len(roles) != 0:
+        if roles:
             msg = f"```{self.member.name} roles ({len(roles)}): ```\n" + ", ".join(roles)
         else:
             msg = f"{self.member.name} has no roles in {interaction.guild.name}."
