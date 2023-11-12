@@ -39,7 +39,7 @@ class Moderation(BaseCog):
                 await interaction.guild.ban(user=user, reason=reason, delete_message_seconds=0)
             else:
                 await interaction.guild.ban(user=user, reason=reason, delete_message_seconds=604800)
-            await interaction.send(f"{interaction.user.mention} banned {user.display_name}! Reason: {reason}")
+            await interaction.send(f"{interaction.user.mention} banned {user.mention}! Reason: {reason}")
         except Forbidden:
             await interaction.send(
                 f"{interaction.user.mention}, you've got no permission to perform this command!", ephemeral=True
