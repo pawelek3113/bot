@@ -3,8 +3,8 @@ import typing as t
 from nextcord import Colour, Forbidden, HTTPException, Interaction, Permissions, SlashOption, User, slash_command
 from nextcord.ext import application_checks
 
+from ..views.pagination import PaginationView
 from . import BaseCog
-from .views.pagination import PaginationView
 
 if t.TYPE_CHECKING:
     from .. import Skurczybyk

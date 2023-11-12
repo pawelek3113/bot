@@ -14,6 +14,7 @@ class PaginationView(ui.View):
         title: str | None = "Not specified",
         description: str | None = None,
         separator: int = 5,
+        icon_url: str | None = None,
         color: Colour | None = Colour(0xADD8E6),
         **kwargs,
     ) -> None:
@@ -22,6 +23,7 @@ class PaginationView(ui.View):
         self.title = title
         self.description = description
         self.separator = separator
+        self.icon_url = icon_url
         self.color = color
 
     @property
