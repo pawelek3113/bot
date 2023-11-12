@@ -3,8 +3,8 @@ import typing as t
 from nextcord import Colour, Forbidden, HTTPException, Interaction, Permissions, SlashOption, User, slash_command
 from nextcord.ext import application_checks
 
+from ..views.PaginationView import PaginationView
 from . import BaseCog
-from .pagination import PaginationView
 
 if t.TYPE_CHECKING:
     from .. import Skurczybyk
@@ -39,7 +39,7 @@ class Moderation(BaseCog):
                 await interaction.guild.ban(user=user, reason=reason, delete_message_seconds=0)
             else:
                 await interaction.guild.ban(user=user, reason=reason, delete_message_seconds=604800)
-            await interaction.send(f"{interaction.user.mention} banned {user.display_name}! Reason: {reason}")
+            await interaction.send(f"{interaction.user.mention} banned {user.mention}! Reason: {reason}")
         except Forbidden:
             await interaction.send(
                 f"{interaction.user.mention}, you've got no permission to perform this command!", ephemeral=True
@@ -89,7 +89,6 @@ class Moderation(BaseCog):
             title="List of bans",
             description="See banned users and their banning reason.",
             color=Colour(0x1EA9FF),
-            icon_url="https://lh3.googleusercontent.com/drive-viewer/AITFw-xNjHq5ShLIkWYl0hgoufXyOwwqBpceO_e--RolWCfXwlRBx1DWjwyZ6zcN48nm9r7ZmSSvDibtc3bBaBXExAx1urBr=w3024-h1514",
         )
 
         await bans_view.send(interaction=interaction)
